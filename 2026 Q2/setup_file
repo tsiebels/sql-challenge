@@ -1,0 +1,247 @@
+-- ============================================================
+--  SQL SQL_CHALLENGE — COMPLETE SETUP SCRIPT
+--  Run this once as ACCOUNTADMIN or a role with CREATE
+--  privileges. Everything the SQL_CHALLENGE needs lives here.
+-- ============================================================
+
+
+-- ── 1. SCHEMA ────────────────────────────────────────────────
+
+CREATE SCHEMA IF NOT EXISTS SQL_CHALLENGE;
+
+
+-- ── 2. TABLES ────────────────────────────────────────────────
+
+-- Logs every raw submission attempt
+CREATE TABLE IF NOT EXISTS SQL_CHALLENGE.SUBMISSIONS (
+    submission_id     INTEGER AUTOINCREMENT PRIMARY KEY,
+    username          VARCHAR       NOT NULL,
+    week_number       INTEGER       NOT NULL,
+    task_number       INTEGER       NOT NULL,
+    query_text        VARCHAR       NOT NULL,
+    submitted_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP()
+);
+
+-- Stores the best score per username / week / task
+CREATE TABLE IF NOT EXISTS SQL_CHALLENGE.SCORES (
+    username          VARCHAR       NOT NULL,
+    week_number       INTEGER       NOT NULL,
+    task_number       INTEGER       NOT NULL,
+    score             INTEGER       NOT NULL DEFAULT 0,
+    max_score         INTEGER       NOT NULL DEFAULT 5,
+    passed            BOOLEAN       NOT NULL DEFAULT FALSE,
+    reviewer_notes    VARCHAR,
+    scored_at         TIMESTAMP     DEFAULT CURRENT_TIMESTAMP(),
+    -- one best-score row per person per task
+    CONSTRAINT uq_score UNIQUE (username, week_number, task_number)
+);
+
+-- Holds the grading rules — you populate this each week
+CREATE OR REPLACE TABLE SQL_CHALLENGE.ANSWER_KEYS (
+    week_number       INTEGER       NOT NULL,
+    task_number       INTEGER       NOT NULL,
+    check_name        VARCHAR       NOT NULL,
+    check_type        VARCHAR       NOT NULL,
+    -- check_type options:
+    --   'row_count'   expected_value = exact integer as string
+    --   'col_present' expected_value = column name that must exist in result
+    --   'value'       expected_value = a value that must appear somewhere in result
+    --   'keyword'     expected_value = SQL keyword that must appear in query text
+    --   'not_keyword' expected_value = SQL keyword that must NOT appear (e.g. SELECT *)
+    expected_value    VARCHAR       NOT NULL,
+    points            INTEGER       NOT NULL DEFAULT 1,
+    hint_on_fail      VARCHAR       NOT NULL
+);
+
+
+-- ── 3. STORED PROCEDURE ──────────────────────────────────────
+CREATE OR REPLACE PROCEDURE ANALYTICS_TEAM_DB.SQL_CHALLENGE.SUBMIT(
+    p_username    VARCHAR,
+    p_week        FLOAT,
+    p_task        FLOAT,
+    p_query       VARCHAR
+)
+RETURNS VARIANT
+LANGUAGE JAVASCRIPT
+EXECUTE AS CALLER
+AS $$
+ 
+    function run(sql, binds) {
+        return binds
+            ? snowflake.execute({ sqlText: sql, binds: binds })
+            : snowflake.execute({ sqlText: sql });
+    }
+ 
+    function val(rs, col) {
+        return rs.getColumnValue(col);
+    }
+ 
+    // Guard: SELECT statements only
+    var trimmed = P_QUERY.trim().toUpperCase();
+    if (!trimmed.startsWith('SELECT') && !trimmed.startsWith('WITH')) {
+        return {
+            status:   'error',
+            message:  'Submissions must be SELECT statements only.',
+            score:    0,
+            feedback: []
+        };
+    }
+ 
+    // Log the raw submission
+    run(
+        'INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.SUBMISSIONS (username, week_number, task_number, query_text) VALUES (?, ?, ?, ?)',
+        [P_USERNAME, P_WEEK, P_TASK, P_QUERY]
+    );
+ 
+    // Run the participant query into a temp table
+    try {
+        run('CREATE OR REPLACE TEMP TABLE ANALYTICS_TEAM_DB.SQL_CHALLENGE.TEMP_RESULT AS (' + P_QUERY + ')');
+    } catch(e) {
+        return {
+            status:   'error',
+            message:  'Your query failed to run. Check the syntax and try again.',
+            error:    e.message,
+            score:    0,
+            feedback: []
+        };
+    }
+ 
+    // Pull answer key rules for this week and task
+    var rules = run(
+        'SELECT check_name, check_type, expected_value, points, hint_on_fail ' +
+        'FROM ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS ' +
+        'WHERE week_number = ? AND task_number = ? ' +
+        'ORDER BY check_name',
+        [P_WEEK, P_TASK]
+    );
+ 
+    var score    = 0;
+    var maxScore = 0;
+    var feedback = [];
+ 
+    while (rules.next()) {
+        var checkType = val(rules, 'CHECK_TYPE');
+        var expected  = val(rules, 'EXPECTED_VALUE');
+        var points    = val(rules, 'POINTS');
+        var checkName = val(rules, 'CHECK_NAME');
+        var hint      = val(rules, 'HINT_ON_FAIL');
+        var passed    = false;
+ 
+        maxScore += points;
+ 
+        try {
+            if (checkType === 'row_count') {
+                var rs = run('SELECT COUNT(*) AS n FROM ANALYTICS_TEAM_DB.SQL_CHALLENGE.TEMP_RESULT');
+                rs.next();
+                passed = (val(rs, 'N').toString() === expected.toString());
+ 
+            } else if (checkType === 'col_present') {
+                var rs = run(
+                    "SELECT COUNT(*) AS n FROM ANALYTICS_TEAM_DB.INFORMATION_SCHEMA.COLUMNS " +
+                    "WHERE TABLE_SCHEMA = 'SQL_CHALLENGE' " +
+                    "AND TABLE_NAME = 'TEMP_RESULT' " +
+                    "AND UPPER(COLUMN_NAME) = UPPER('" + expected + "')"
+                );
+                rs.next();
+                passed = (val(rs, 'N') > 0);
+ 
+            } else if (checkType === 'value') {
+                // Get all column names from the temp result
+                var colRs = run(
+                    "SELECT COLUMN_NAME FROM ANALYTICS_TEAM_DB.INFORMATION_SCHEMA.COLUMNS " +
+                    "WHERE TABLE_SCHEMA = 'SQL_CHALLENGE' AND TABLE_NAME = 'TEMP_RESULT' " +
+                    "ORDER BY ORDINAL_POSITION"
+                );
+                var cols = [];
+                while (colRs.next()) {
+                    cols.push("COALESCE(TO_VARCHAR(" + colRs.getColumnValue('COLUMN_NAME') + "), '')");
+                }
+                if (cols.length === 0) {
+                    passed = false;
+                } else {
+                    // Search each column individually for the expected value
+                    var whereClauses = cols.map(function(c) {
+                        return "UPPER(" + c + ") LIKE UPPER('%" + expected + "%')";
+                    });
+                    var rs = run(
+                        "SELECT COUNT(*) AS n FROM ANALYTICS_TEAM_DB.SQL_CHALLENGE.TEMP_RESULT " +
+                        "WHERE " + whereClauses.join(' OR ')
+                    );
+                    rs.next();
+                    passed = (val(rs, 'N') > 0);
+                }
+ 
+            } else if (checkType === 'keyword') {
+                passed = P_QUERY.toUpperCase().indexOf(expected.toUpperCase()) >= 0;
+ 
+            } else if (checkType === 'not_keyword') {
+                passed = P_QUERY.toUpperCase().indexOf(expected.toUpperCase()) < 0;
+            }
+        } catch(e) {
+            passed = false;
+        }
+ 
+        if (passed) {
+            score += points;
+            feedback.push({ check: checkName, passed: true,  points: '+' + points, hint: null });
+        } else {
+            feedback.push({ check: checkName, passed: false, points: '0',          hint: hint });
+        }
+    }
+ 
+    // Upsert best score — only overwrites if this attempt is higher
+    run(
+        'MERGE INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.SCORES AS target ' +
+        'USING (SELECT ? AS username, ? AS week_number, ? AS task_number, ? AS score, ? AS max_score, ' +
+        '             ? AS passed, ? AS reviewer_notes, CURRENT_TIMESTAMP() AS scored_at) AS src ' +
+        'ON target.username = src.username ' +
+        'AND target.week_number = src.week_number ' +
+        'AND target.task_number = src.task_number ' +
+        'WHEN MATCHED AND src.score > target.score THEN UPDATE SET ' +
+        '    target.score = src.score, target.max_score = src.max_score, ' +
+        '    target.passed = src.passed, target.reviewer_notes = src.reviewer_notes, ' +
+        '    target.scored_at = src.scored_at ' +
+        'WHEN NOT MATCHED THEN INSERT ' +
+        '    (username, week_number, task_number, score, max_score, passed, reviewer_notes, scored_at) ' +
+        'VALUES ' +
+        '    (src.username, src.week_number, src.task_number, src.score, src.max_score, ' +
+        '     src.passed, src.reviewer_notes, src.scored_at)',
+        [
+            P_USERNAME, P_WEEK, P_TASK,
+            score, maxScore,
+            score === maxScore ? 'true' : 'false',
+            feedback.map(function(f) {
+                return (f.passed ? '✓' : '✗') + ' ' + f.check + (f.hint ? ' — ' + f.hint : '');
+            }).join(' | ')
+        ]
+    );
+ 
+    return {
+        status:    score === maxScore ? 'passed' : 'partial',
+        week:      P_WEEK,
+        task:      P_TASK,
+        score:     score,
+        max_score: maxScore,
+        feedback:  feedback
+    };
+ 
+$$;
+ 
+-- Re-grant after recreating (grants are lost on CREATE OR REPLACE)
+GRANT USAGE ON PROCEDURE ANALYTICS_TEAM_DB.SQL_CHALLENGE.SUBMIT(VARCHAR, FLOAT, FLOAT, VARCHAR)
+    TO ROLE ANALYTICS_TEAM_ROLE;
+ 
+-- Verify it works
+CALL ANALYTICS_TEAM_DB.SQL_CHALLENGE.SUBMIT('test', 0, 0, $$ SELECT 1 AS test $$);
+
+
+-- ── 4. GRANTS ────────────────────────────────────────────────
+-- Run these so every team member can query data and submit
+
+GRANT USAGE  ON SCHEMA SQL_CHALLENGE                                            TO ROLE ANALYTICS_TEAM_ROLE;
+GRANT SELECT ON ALL TABLES IN SCHEMA SQL_CHALLENGE                              TO ROLE ANALYTICS_TEAM_ROLE;
+GRANT USAGE  ON SCHEMA SQL_CHALLENGE                                        TO ROLE ANALYTICS_TEAM_ROLE;
+GRANT SELECT ON SQL_CHALLENGE.SCORES                                        TO ROLE ANALYTICS_TEAM_ROLE;
+GRANT INSERT ON SQL_CHALLENGE.SUBMISSIONS                                   TO ROLE ANALYTICS_TEAM_ROLE;
+
+GRANT USAGE ON PROCEDURE SUBMIT(VARCHAR, INTEGER, INTEGER, VARCHAR) TO ROLE ANALYTICS_TEAM_ROLE;
