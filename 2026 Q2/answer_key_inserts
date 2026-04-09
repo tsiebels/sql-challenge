@@ -1,0 +1,372 @@
+-- Clear existing keys before re-inserting (safe to re-run)
+DELETE FROM ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS;
+
+-- ── WEEK 1 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (1, 1, 'used_where', 'keyword', 'WHERE', 1, 'Use a WHERE clause to filter by status'),
+    (1, 1, 'filtered_delivered', 'keyword', 'delivered', 1, 'Filter on order_status = ''delivered'''),
+    (1, 1, 'has_order_id', 'col_present', 'ORDER_ID', 1, 'Your result should include order_id'),
+    (1, 1, 'has_status', 'col_present', 'ORDER_STATUS', 1, 'Your result should include order_status'),
+    (1, 1, 'no_star', 'not_keyword', 'SELECT *', 1, 'Avoid SELECT * — name your columns explicitly');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (1, 2, 'used_where', 'keyword', 'WHERE', 1, 'Use a WHERE clause to filter by year'),
+    (1, 2, 'filters_2018', 'keyword', '2018', 1, 'Filter to orders placed in 2018'),
+    (1, 2, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort results with ORDER BY'),
+    (1, 2, 'sorted_asc', 'keyword', 'ASC', 1, 'Sort oldest first — use ASC'),
+    (1, 2, 'has_timestamp', 'col_present', 'ORDER_PURCHASE_TIMESTAMP', 1, 'Include order_purchase_timestamp in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (1, 3, 'used_in', 'keyword', ' IN ', 2, 'Use IN (''canceled'', ''invoiced'') rather than two OR conditions'),
+    (1, 3, 'has_canceled', 'value', 'canceled', 1, 'Your result should include canceled orders'),
+    (1, 3, 'has_invoiced', 'value', 'invoiced', 1, 'Your result should include invoiced orders'),
+    (1, 3, 'used_where', 'keyword', 'WHERE', 1, 'You need a WHERE clause');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (1, 4, 'used_is_null', 'keyword', 'IS NULL', 2, 'Use IS NULL — you cannot use = NULL in SQL'),
+    (1, 4, 'has_order_id', 'col_present', 'ORDER_ID', 1, 'Include order_id in your result'),
+    (1, 4, 'has_status', 'col_present', 'ORDER_STATUS', 1, 'Include order_status in your result'),
+    (1, 4, 'has_est_delivery', 'col_present', 'ORDER_ESTIMATED_DELIVERY_DATE', 1, 'Include order_estimated_delivery_date'),
+    (1, 4, 'filters_null_delivery', 'keyword', 'ORDER_DELIVERED_CUSTOMER_DATE', 1, 'Filter on order_delivered_customer_date');
+-- ── WEEK 2 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (2, 1, 'used_group_by', 'keyword', 'GROUP BY', 1, 'Use GROUP BY to group rows by status'),
+    (2, 1, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count rows per group'),
+    (2, 1, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort results with ORDER BY'),
+    (2, 1, 'sorted_desc', 'keyword', 'DESC', 1, 'Sort highest count first — use DESC'),
+    (2, 1, 'has_status', 'col_present', 'ORDER_STATUS', 1, 'Include order_status in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (2, 2, 'used_date_trunc', 'keyword', 'DATE_TRUNC', 2, 'Use DATE_TRUNC(''month'', ...) to group by month'),
+    (2, 2, 'used_group_by', 'keyword', 'GROUP BY', 1, 'Use GROUP BY to group rows by month'),
+    (2, 2, 'filters_2017', 'keyword', '2017', 1, 'Filter to 2017 rows only'),
+    (2, 2, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort results chronologically with ORDER BY');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (2, 3, 'used_having', 'keyword', 'HAVING', 2, 'Use HAVING to filter on aggregated results — not WHERE'),
+    (2, 3, 'used_group_by', 'keyword', 'GROUP BY', 1, 'Use GROUP BY order_status'),
+    (2, 3, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count rows per group'),
+    (2, 3, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort results with ORDER BY');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (2, 4, 'used_case_when', 'keyword', 'CASE', 2, 'Use CASE WHEN to label on-time vs late orders'),
+    (2, 4, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count each group'),
+    (2, 4, 'filters_delivered', 'keyword', 'delivered', 1, 'Filter to delivered orders only'),
+    (2, 4, 'handles_nulls', 'keyword', 'IS NOT NULL', 1, 'Exclude rows where delivery date IS NOT NULL');
+-- ── WEEK 3 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (3, 1, 'used_join', 'keyword', 'JOIN', 1, 'Use a JOIN to connect the two tables'),
+    (3, 1, 'joined_customers', 'keyword', 'OLIST_CUSTOMERS', 1, 'Join to the OLIST_CUSTOMERS table'),
+    (3, 1, 'used_on', 'keyword', ' ON ', 1, 'Use ON to define the join condition'),
+    (3, 1, 'has_state', 'col_present', 'CUSTOMER_STATE', 1, 'Include customer_state in your result'),
+    (3, 1, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort your results with ORDER BY');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (3, 2, 'used_join', 'keyword', 'JOIN', 1, 'Use a JOIN to connect the two tables'),
+    (3, 2, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY customer_state'),
+    (3, 2, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count rows per state'),
+    (3, 2, 'has_state', 'col_present', 'CUSTOMER_STATE', 1, 'Include customer_state in your result'),
+    (3, 2, 'sorted_desc', 'keyword', 'DESC', 1, 'Sort highest count first');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (3, 3, 'used_left_join', 'keyword', 'LEFT JOIN', 2, 'Use a LEFT JOIN — INNER JOIN will not find missing rows'),
+    (3, 3, 'used_is_null', 'keyword', 'IS NULL', 2, 'Filter WHERE order_id IS NULL to find unmatched rows'),
+    (3, 3, 'has_customer_id', 'col_present', 'CUSTOMER_ID', 1, 'Include customer_id in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (3, 4, 'used_join', 'keyword', 'JOIN', 1, 'Use a JOIN to connect the two tables'),
+    (3, 4, 'filters_delivered', 'keyword', 'delivered', 1, 'Filter to delivered orders only'),
+    (3, 4, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY customer_city'),
+    (3, 4, 'used_limit', 'keyword', 'LIMIT', 1, 'Use LIMIT 5 to return only the top 5'),
+    (3, 4, 'has_city', 'col_present', 'CUSTOMER_CITY', 1, 'Include customer_city in your result');
+-- ── WEEK 4 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (4, 1, 'used_cte_or_sub', 'keyword', 'WITH', 2, 'Use a CTE (WITH ...) to structure your query'),
+    (4, 1, 'used_avg', 'keyword', 'AVG', 1, 'Use AVG() to calculate the average payment value'),
+    (4, 1, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort results with ORDER BY'),
+    (4, 1, 'has_order_id', 'col_present', 'ORDER_ID', 1, 'Include order_id in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (4, 2, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY product_id'),
+    (4, 2, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count rows per product'),
+    (4, 2, 'used_limit', 'keyword', 'LIMIT', 1, 'Use LIMIT 5 to return the top 5'),
+    (4, 2, 'sorted_desc', 'keyword', 'DESC', 1, 'Sort highest count first'),
+    (4, 2, 'has_product_id', 'col_present', 'PRODUCT_ID', 1, 'Include product_id in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (4, 3, 'used_cte', 'keyword', 'WITH', 2, 'Use a CTE to aggregate payments before joining'),
+    (4, 3, 'used_sum', 'keyword', 'SUM', 1, 'Use SUM() to total payment_value per order'),
+    (4, 3, 'used_join', 'keyword', 'JOIN', 1, 'Join your payment CTE to OLIST_ORDERS'),
+    (4, 3, 'has_status', 'col_present', 'ORDER_STATUS', 1, 'Include order_status in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (4, 4, 'used_cte', 'keyword', 'WITH', 1, 'Use a CTE to structure your query'),
+    (4, 4, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY customer_id'),
+    (4, 4, 'used_having', 'keyword', 'HAVING', 2, 'Use HAVING to filter customers with more than one order'),
+    (4, 4, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count orders per customer');
+-- ── WEEK 5 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (5, 1, 'used_over', 'keyword', 'OVER', 1, 'Use OVER() to define the window'),
+    (5, 1, 'used_partition', 'keyword', 'PARTITION BY', 2, 'Use PARTITION BY payment_type to rank within each type'),
+    (5, 1, 'used_rank', 'keyword', 'RANK', 1, 'Use RANK() to rank by payment value'),
+    (5, 1, 'sorted_desc', 'keyword', 'DESC', 1, 'ORDER BY payment_value DESC inside the window');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (5, 2, 'used_row_number', 'keyword', 'ROW_NUMBER', 2, 'Use ROW_NUMBER() to assign a unique rank per customer'),
+    (5, 2, 'used_qualify', 'keyword', 'QUALIFY', 2, 'Use QUALIFY to filter on the window function result'),
+    (5, 2, 'used_partition', 'keyword', 'PARTITION BY', 1, 'PARTITION BY customer_id to rank within each customer');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (5, 3, 'used_row_number', 'keyword', 'ROW_NUMBER', 2, 'Use ROW_NUMBER() to rank items within each order'),
+    (5, 3, 'used_qualify', 'keyword', 'QUALIFY', 2, 'Use QUALIFY rn <= 3 to keep only the top 3'),
+    (5, 3, 'used_partition', 'keyword', 'PARTITION BY', 1, 'PARTITION BY order_id to rank within each order');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (5, 4, 'used_percent_rank', 'keyword', 'PERCENT_RANK', 2, 'Use PERCENT_RANK() to calculate percentile position'),
+    (5, 4, 'used_over', 'keyword', 'OVER', 1, 'Use OVER() to define the window'),
+    (5, 4, 'used_round', 'keyword', 'ROUND', 1, 'Round the percentile rank to 2 decimal places'),
+    (5, 4, 'has_pct_col', 'col_present', 'PERCENTILE_RANK', 1, 'Include a percentile_rank column in your result');
+-- ── WEEK 6 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (6, 1, 'used_lag', 'keyword', 'LAG', 2, 'Use LAG() to access the previous row value'),
+    (6, 1, 'used_over', 'keyword', 'OVER', 1, 'Use OVER (ORDER BY ...) with LAG'),
+    (6, 1, 'used_date_trunc', 'keyword', 'DATE_TRUNC', 1, 'Use DATE_TRUNC(''month'', ...) to group by month'),
+    (6, 1, 'has_prev_month', 'col_present', 'PREV_MONTH_COUNT', 1, 'Include a prev_month_count column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (6, 2, 'used_lag', 'keyword', 'LAG', 2, 'Use LAG() to get the previous month count'),
+    (6, 2, 'used_round', 'keyword', 'ROUND', 1, 'Round the growth percentage to 1 decimal place'),
+    (6, 2, 'handles_null_div', 'keyword', 'NULLIF', 1, 'Use NULLIF to avoid divide-by-zero errors'),
+    (6, 2, 'has_growth_col', 'col_present', 'GROWTH_PCT', 1, 'Include a growth_pct column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (6, 3, 'used_sum_over', 'keyword', 'SUM', 1, 'Use SUM() OVER() for a running total'),
+    (6, 3, 'used_over', 'keyword', 'OVER', 1, 'Use OVER (ORDER BY ...) to define the window'),
+    (6, 3, 'used_unbounded', 'keyword', 'UNBOUNDED', 2, 'Use ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW'),
+    (6, 3, 'has_running_total', 'col_present', 'RUNNING_TOTAL', 1, 'Include a running_total column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (6, 4, 'used_avg_over', 'keyword', 'AVG', 1, 'Use AVG() OVER() for a moving average'),
+    (6, 4, 'used_rows_between', 'keyword', 'ROWS BETWEEN', 2, 'Use ROWS BETWEEN 2 PRECEDING AND CURRENT ROW'),
+    (6, 4, 'used_round', 'keyword', 'ROUND', 1, 'Round the moving average to 1 decimal place'),
+    (6, 4, 'has_moving_avg', 'col_present', 'MOVING_AVG_3M', 1, 'Include a moving_avg_3m column in your result');
+-- ── WEEK 7 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (7, 1, 'used_cte', 'keyword', 'WITH', 1, 'Use a CTE to define your cohort logic'),
+    (7, 1, 'used_min', 'keyword', 'MIN', 2, 'Use MIN(order_purchase_timestamp) to find first order'),
+    (7, 1, 'used_date_trunc', 'keyword', 'DATE_TRUNC', 1, 'Use DATE_TRUNC(''month'', ...) to get the cohort month'),
+    (7, 1, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY customer_id'),
+    (7, 1, 'has_cohort_month', 'col_present', 'COHORT_MONTH', 1, 'Include a cohort_month column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (7, 2, 'used_cte', 'keyword', 'WITH', 1, 'Use a CTE to build on Task 1'),
+    (7, 2, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count customers per cohort'),
+    (7, 2, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY cohort_month'),
+    (7, 2, 'used_order_by', 'keyword', 'ORDER BY', 1, 'Sort results chronologically'),
+    (7, 2, 'has_cohort_size', 'col_present', 'COHORT_SIZE', 1, 'Include a cohort_size column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (7, 3, 'used_datediff', 'keyword', 'DATEDIFF', 2, 'Use DATEDIFF(''month'', ...) to calculate months between dates'),
+    (7, 3, 'used_join', 'keyword', 'JOIN', 1, 'Join your cohort CTE back to OLIST_ORDERS'),
+    (7, 3, 'has_months_since', 'col_present', 'MONTHS_SINCE_FIRST_ORDER', 1, 'Include a months_since_first_order column'),
+    (7, 3, 'has_cohort_month', 'col_present', 'COHORT_MONTH', 1, 'Include cohort_month in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (7, 4, 'used_cte', 'keyword', 'WITH', 1, 'Use CTEs to structure your retention logic'),
+    (7, 4, 'used_count_dist', 'keyword', 'COUNT(DISTINCT', 2, 'Use COUNT(DISTINCT customer_id) to count active customers'),
+    (7, 4, 'used_round', 'keyword', 'ROUND', 1, 'Round retention rate to 1 decimal place'),
+    (7, 4, 'has_retention', 'col_present', 'RETENTION_RATE', 1, 'Include a retention_rate column in your result'),
+    (7, 4, 'filters_months', 'keyword', 'months_since', 1, 'Filter to months 0-3');
+-- ── WEEK 8 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (8, 1, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY order_status'),
+    (8, 1, 'used_count', 'keyword', 'COUNT', 1, 'Use COUNT() to count orders per status'),
+    (8, 1, 'sorted_desc', 'keyword', 'DESC', 1, 'Sort highest count first'),
+    (8, 1, 'has_status', 'col_present', 'ORDER_STATUS', 1, 'Include order_status in your result'),
+    (8, 1, 'has_count_col', 'col_present', 'ORDER_COUNT', 1, 'Include an order_count column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (8, 2, 'used_case_when', 'keyword', 'CASE', 2, 'Use CASE WHEN inside COUNT() for conditional aggregation'),
+    (8, 2, 'has_approved', 'keyword', 'approved', 1, 'Include the ''approved'' stage in your funnel'),
+    (8, 2, 'has_shipped', 'keyword', 'shipped', 1, 'Include the ''shipped'' stage in your funnel'),
+    (8, 2, 'has_delivered', 'keyword', 'delivered', 1, 'Include the ''delivered'' stage in your funnel'),
+    (8, 2, 'used_round', 'keyword', 'ROUND', 1, 'Round percentages to 1 decimal place');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (8, 3, 'used_join', 'keyword', 'JOIN', 1, 'Join OLIST_ORDER_ITEMS to OLIST_PRODUCTS'),
+    (8, 3, 'used_sum', 'keyword', 'SUM', 1, 'Use SUM(price) to calculate revenue'),
+    (8, 3, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY product_category_name'),
+    (8, 3, 'filters_null_cat', 'keyword', 'IS NOT NULL', 1, 'Exclude rows where category is NULL'),
+    (8, 3, 'used_limit', 'keyword', 'LIMIT', 1, 'Use LIMIT 10 for the top 10');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (8, 4, 'used_count_dist', 'keyword', 'COUNT(DISTINCT', 2, 'Use COUNT(DISTINCT order_id) to count unique orders per seller'),
+    (8, 4, 'used_join', 'keyword', 'JOIN', 1, 'Join OLIST_ORDER_ITEMS to OLIST_SELLERS'),
+    (8, 4, 'used_limit', 'keyword', 'LIMIT', 1, 'Use LIMIT 10 for the top 10'),
+    (8, 4, 'has_seller_id', 'col_present', 'SELLER_ID', 1, 'Include seller_id in your result');
+-- ── WEEK 9 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (9, 1, 'used_cte', 'keyword', 'WITH', 1, 'Use CTEs to structure your RFM calculation'),
+    (9, 1, 'used_datediff', 'keyword', 'DATEDIFF', 1, 'Use DATEDIFF to calculate recency in days'),
+    (9, 1, 'used_count_dist', 'keyword', 'COUNT(DISTINCT', 1, 'Use COUNT(DISTINCT order_id) for frequency'),
+    (9, 1, 'used_sum', 'keyword', 'SUM', 1, 'Use SUM(payment_value) for monetary'),
+    (9, 1, 'used_max', 'keyword', 'MAX', 1, 'Use MAX() to find the reference date or last order date'),
+    (9, 1, 'has_recency', 'col_present', 'RECENCY_DAYS', 1, 'Include a recency_days column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (9, 2, 'used_ntile', 'keyword', 'NTILE', 3, 'Use NTILE(5) to score each dimension into quintiles'),
+    (9, 2, 'used_over', 'keyword', 'OVER', 1, 'Use OVER (ORDER BY ...) with NTILE'),
+    (9, 2, 'has_r_score', 'col_present', 'R_SCORE', 1, 'Include an r_score column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (9, 3, 'used_case_when', 'keyword', 'CASE', 2, 'Use CASE WHEN to assign segment labels'),
+    (9, 3, 'has_champion', 'keyword', 'Champion', 1, 'Include a ''Champion'' segment'),
+    (9, 3, 'has_loyal', 'keyword', 'Loyal', 1, 'Include a ''Loyal'' segment'),
+    (9, 3, 'has_at_risk', 'keyword', 'At Risk', 1, 'Include an ''At Risk'' segment'),
+    (9, 3, 'has_segment_col', 'col_present', 'SEGMENT', 1, 'Include a segment column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (9, 4, 'used_group_by', 'keyword', 'GROUP BY', 1, 'GROUP BY segment'),
+    (9, 4, 'used_avg', 'keyword', 'AVG', 1, 'Use AVG() for avg_monetary and avg_recency_days'),
+    (9, 4, 'sorted_desc', 'keyword', 'DESC', 1, 'Sort by avg_monetary descending'),
+    (9, 4, 'has_segment_col', 'col_present', 'SEGMENT', 1, 'Include segment in your result'),
+    (9, 4, 'has_cust_count', 'col_present', 'CUSTOMER_COUNT', 1, 'Include customer_count in your result');
+-- ── WEEK 10 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (10, 1, 'used_count', 'keyword', 'COUNT', 2, 'Use COUNT(*) - COUNT(column) to find NULLs per column'),
+    (10, 1, 'used_round', 'keyword', 'ROUND', 1, 'Round null_pct to 1 decimal place'),
+    (10, 1, 'has_null_count', 'col_present', 'NULL_COUNT', 1, 'Include a null_count column in your result'),
+    (10, 1, 'has_null_pct', 'col_present', 'NULL_PCT', 1, 'Include a null_pct column in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (10, 2, 'used_where', 'keyword', 'WHERE', 1, 'Use WHERE to filter for impossible timestamps'),
+    (10, 2, 'has_order_id', 'col_present', 'ORDER_ID', 1, 'Include order_id in your result'),
+    (10, 2, 'has_purchase_ts', 'col_present', 'ORDER_PURCHASE_TIMESTAMP', 1, 'Include order_purchase_timestamp in your result'),
+    (10, 2, 'has_delivery_ts', 'col_present', 'ORDER_DELIVERED_CUSTOMER_DATE', 1, 'Include order_delivered_customer_date in your result'),
+    (10, 2, 'compares_dates', 'keyword', 'order_delivered_customer_date', 1, 'Compare order_delivered_customer_date to order_purchase_timestamp');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (10, 3, 'used_row_number', 'keyword', 'ROW_NUMBER', 2, 'Use ROW_NUMBER() to number rows within each zip code'),
+    (10, 3, 'used_qualify', 'keyword', 'QUALIFY', 2, 'Use QUALIFY rn = 1 to keep one row per zip code'),
+    (10, 3, 'used_partition', 'keyword', 'PARTITION BY', 1, 'PARTITION BY geolocation_zip_code_prefix');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (10, 4, 'used_coalesce', 'keyword', 'COALESCE', 3, 'Use COALESCE to replace NULLs with the estimated date'),
+    (10, 4, 'has_eff_delivery', 'col_present', 'EFFECTIVE_DELIVERY_DATE', 1, 'Include an effective_delivery_date column'),
+    (10, 4, 'has_order_id', 'col_present', 'ORDER_ID', 1, 'Include order_id in your result');
+-- ── WEEK 11 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (11, 1, 'queries_history', 'keyword', 'QUERY_HISTORY', 2, 'Query INFORMATION_SCHEMA.QUERY_HISTORY_BY_USER()'),
+    (11, 1, 'filters_success', 'keyword', 'SUCCESS', 1, 'Filter to execution_status = ''SUCCESS'''),
+    (11, 1, 'used_limit', 'keyword', 'LIMIT', 1, 'Use LIMIT 5 for the 5 slowest'),
+    (11, 1, 'sorted_desc', 'keyword', 'DESC', 1, 'Sort by elapsed time descending'),
+    (11, 1, 'has_elapsed', 'col_present', 'ELAPSED', 1, 'Include total elapsed time in your result');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (11, 2, 'queries_history', 'keyword', 'QUERY_HISTORY', 2, 'Query QUERY_HISTORY to compare bytes scanned'),
+    (11, 2, 'has_bytes', 'keyword', 'BYTES_SCANNED', 2, 'Include bytes_scanned in your comparison'),
+    (11, 2, 'used_where', 'keyword', 'WHERE', 1, 'Filter to the specific queries you want to compare');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (11, 3, 'used_cte', 'keyword', 'WITH', 3, 'Rewrite the subquery using a CTE (WITH ...)'),
+    (11, 3, 'used_join', 'keyword', 'JOIN', 1, 'Join your payment CTE to OLIST_ORDERS'),
+    (11, 3, 'no_subquery', 'not_keyword', 'JOIN (', 1, 'Remove the inline subquery — use a CTE instead');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (11, 4, 'queries_submissions', 'keyword', 'SUBMISSIONS', 2, 'Query ANALYTICS_TEAM_DB.SQL_CHALLENGE.SUBMISSIONS'),
+    (11, 4, 'uses_current_user', 'keyword', 'CURRENT_USER', 2, 'Filter to your own username using CURRENT_USER()'),
+    (11, 4, 'has_week_number', 'col_present', 'WEEK_NUMBER', 1, 'Include week_number in your result');
+-- ── WEEK 12 ──────────────────────────────────────────────────
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (12, 1, 'used_cte', 'keyword', 'WITH', 1, 'Use CTEs to structure your revenue query'),
+    (12, 1, 'used_sum', 'keyword', 'SUM', 1, 'Use SUM(payment_value) for revenue'),
+    (12, 1, 'used_lag', 'keyword', 'LAG', 2, 'Use LAG() for month-over-month growth'),
+    (12, 1, 'used_date_trunc', 'keyword', 'DATE_TRUNC', 1, 'Use DATE_TRUNC(''month'', ...) to group by month'),
+    (12, 1, 'handles_null_div', 'keyword', 'NULLIF', 1, 'Use NULLIF to handle the first month gracefully');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (12, 2, 'used_cte', 'keyword', 'WITH', 1, 'Use CTEs for each step of the cohort logic'),
+    (12, 2, 'used_datediff', 'keyword', 'DATEDIFF', 1, 'Use DATEDIFF to calculate months since first order'),
+    (12, 2, 'used_count_dist', 'keyword', 'COUNT(DISTINCT', 2, 'Use COUNT(DISTINCT customer_id) for active customers'),
+    (12, 2, 'has_retention', 'col_present', 'RETENTION_RATE', 1, 'Include a retention_rate column in your result'),
+    (12, 2, 'filters_months', 'keyword', 'months_since', 1, 'Filter to months 0-3');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (12, 3, 'used_translation', 'keyword', 'PRODUCT_CATEGORY_NAME_TRANSLATION', 2, 'Join to PRODUCT_CATEGORY_NAME_TRANSLATION for English names'),
+    (12, 3, 'used_left_join', 'keyword', 'LEFT JOIN', 1, 'Use LEFT JOIN so untranslated categories are not dropped'),
+    (12, 3, 'used_coalesce', 'keyword', 'COALESCE', 1, 'Use COALESCE to fall back to Portuguese name if no translation'),
+    (12, 3, 'used_sum', 'keyword', 'SUM', 1, 'Use SUM(price) for total revenue'),
+    (12, 3, 'used_limit', 'keyword', 'LIMIT', 1, 'Use LIMIT 10 for the top 10');
+INSERT INTO ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+    (week_number, task_number, check_name, check_type, expected_value, points, hint_on_fail)
+VALUES
+    (12, 4, 'used_ntile', 'keyword', 'NTILE', 2, 'Use NTILE(5) to score RFM dimensions'),
+    (12, 4, 'used_case_when', 'keyword', 'CASE', 1, 'Use CASE WHEN to assign segment labels'),
+    (12, 4, 'used_cte', 'keyword', 'WITH', 1, 'Use CTEs for each step of the RFM logic'),
+    (12, 4, 'has_segment', 'col_present', 'SEGMENT', 1, 'Include segment in your final output'),
+    (12, 4, 'has_cust_count', 'col_present', 'CUSTOMER_COUNT', 1, 'Include customer_count in your final output');
+
+-- Verify
+SELECT week_number, task_number, COUNT(*) AS check_count
+FROM ANALYTICS_TEAM_DB.SQL_CHALLENGE.ANSWER_KEYS
+GROUP BY week_number, task_number
+ORDER BY week_number, task_number;
